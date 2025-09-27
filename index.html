@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Team Docs</title>
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <style>
+    body { max-width: 800px; margin: 2rem auto; font-family: system-ui, sans-serif; line-height: 1.6; }
+    #toolbar { position: sticky; top: 0; background: #fff; padding: 0.5rem 0; border-bottom: 1px solid #ddd; display: flex; gap: 0.5rem; }
+    button { padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; }
+    #status { margin-left: auto; opacity: 0.7; font-size: 0.9rem; }
+    input { width: 100%; padding: 0.5rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <button onclick="copyFragmentLink()">Copy Fragment Link</button>
+    <span id="status"></span>
+  </div>
+
+  <main id="content"></main>
+
+  <input id="slash-input" placeholder="Type /fragment + Enter to copy link">
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module">
+    // Load README.md dynamically
+    const md = await (await fetch('README.md', {cache:'no-store'})).text();
+    document.getElementById('content').innerHTML = marked.parse(md);
+
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+    }
+  </script>
+
+  <script src="text-fragment.js"></script>
+</body>
+</html>
